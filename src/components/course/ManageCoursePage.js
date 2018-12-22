@@ -2,6 +2,7 @@ import React, {PropTypes} from "react";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as courseActions from "../../actions/courseActions";
+import * as authorActions from "../../actions/authorActions";
 import CourseForm from "./CourseForm";
 import toastr from "toastr";
 
@@ -11,14 +12,14 @@ class ManageCoursePage extends React.Component {
         super(props, context);
 
         this.state = {
-            authors: [],
             course: Object.assign({}, this.props.course),
             errors: {},
-            saving:false
+            saving: false
         };
 
         this.updateCourseState = this.updateCourseState.bind(this);
         this.saveCourse = this.saveCourse.bind(this);
+        this.deleteCourse = this.deleteCourse.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -45,6 +46,17 @@ class ManageCoursePage extends React.Component {
         });
     }
 
+    deleteCourse(event) {
+        event.preventDefault();
+        this.setState({saving:true}); 
+        this.props.actions.deleteCourse(this.state.course)
+        .then(() => this.redirect())
+        .catch(error => {
+            toastr.error(error);
+            this.setState({saving:false}); 
+        });
+    }
+
     redirect() {
         this.setState({saving:false}); 
         toastr.success("Course saved");
@@ -54,9 +66,10 @@ class ManageCoursePage extends React.Component {
     render() {
         return (
             <CourseForm
-            allAuthors={this.state.authors}
+            allAuthors={this.props.authors}
             onChange={this.updateCourseState}
             onSave={this.saveCourse}
+            onDelete={this.deleteCourse}
             course={this.state.course}
             errors={this.state.errors}
             saving={this.state.saving}/>
@@ -83,7 +96,6 @@ function GetCourseById(courses, id) {
 
 function mapStateToProps(state, ownProps) {
     const courseId = ownProps.params.id; 
-
     let course = {id: "", watchHref: "", title: "", authorId: "", length: "", category: ""};
 
 
@@ -95,7 +107,6 @@ function mapStateToProps(state, ownProps) {
         return {
             value: author.id,
             text: author.firstName + " " + author.lastName
-
         };
     });
 
