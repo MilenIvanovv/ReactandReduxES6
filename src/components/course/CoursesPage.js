@@ -10,15 +10,20 @@ class CoursesPage extends React.Component {
     constructor(props, context) {
         super(props, context);
 
+        this.state = {
+            NoCourses:false
+        };
+
         this.redirectToAddCoursePage = this.redirectToAddCoursePage.bind(this);
     }
 
     redirectToAddCoursePage() {
-        browserHistory.push("/course")
+        browserHistory.push("/course");
     }
    
     render() {
         const {courses} = this.props;
+        courses.length ? (this.state.NoCourses = false):(this.state.NoCourses = true);
 
         return (
             <div>
@@ -27,7 +32,8 @@ class CoursesPage extends React.Component {
                     value = "Add Course"
                     className="btn btn-primary"
                     onClick={this.redirectToAddCoursePage}/>
-                <CourseList courses={courses}/>
+                    {!this.state.NoCourses ? (<CourseList courses={courses}/>):
+                    (<span>No Courses</span>)}
             </div>
         );
     }
