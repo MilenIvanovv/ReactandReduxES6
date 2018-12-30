@@ -2,9 +2,9 @@ import React, {PropTypes} from "react";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as courseActions from "../../actions/courseActions";
+import * as formActions from "../../actions/formActions";
 import CourseForm from "./CourseForm";
 import toastr from "toastr";
-import {SortCoursebyTitle} from "../../reducers/courseReducer";
 
 class ManageCoursePage extends React.Component {
 
@@ -14,7 +14,7 @@ class ManageCoursePage extends React.Component {
         this.state = {
             course: Object.assign({}, this.props.course),
             errors: {},
-            saving: false
+            saving: false,
         };
 
         this.updateCourseState = this.updateCourseState.bind(this);
@@ -22,10 +22,16 @@ class ManageCoursePage extends React.Component {
         this.deleteCourse = this.deleteCourse.bind(this);
     }
 
+
     componentWillReceiveProps(nextProps) {
         if (this.props.course.id != nextProps.course.id) {
             this.setState({course: Object.assign({}, nextProps.course)});
         }
+    }
+
+    componentWillUnmount() {
+        if (this.state.course.id === "")
+        this.props.actions.saveUnsavedChanges(this.state.course);
     }
 
     updateCourseState(event) {
@@ -98,8 +104,10 @@ function mapStateToProps(state, ownProps) {
     const courseId = ownProps.params.id; 
     let course = {id: "", watchHref: "", title: "", authorId: "", length: "", category: ""};
 
-
-    if(courseId && state.courses.length > 0) {
+    if(ownProps.params.id === "NewCourse") {
+        course = state.UnSavedCourse
+    }
+    else if(courseId && state.courses.length > 0) {
         course = GetCourseById(state.courses, courseId);
     }
 
@@ -118,7 +126,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(courseActions,dispatch)
+        actions: bindActionCreators(Object.assign({}, courseActions, formActions),dispatch)
     };
 }
 
