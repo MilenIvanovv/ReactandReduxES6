@@ -70,8 +70,18 @@ class CourseApi {
       setTimeout(() => {
         // Simulate server-side validation
         const minCourseTitleLength = 1;
+        const minCategoryLength = 1;
+        const minLenghtLength = 1;
         if (course.title.length < minCourseTitleLength) {
           reject(`Title must be at least ${minCourseTitleLength} characters.`);
+        }
+
+        if (course.category.length < minCategoryLength) {
+          reject(`Category must be at least ${minCategoryLength} characters.`);
+        }
+
+        if (course.length.length < minLenghtLength) {
+          reject(`Lenght must be at least ${minLenghtLength} characters.`);
         }
 
         if (course.id) {

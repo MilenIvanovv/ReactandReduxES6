@@ -2,9 +2,9 @@ import React, {PropTypes} from "react";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as courseActions from "../../actions/courseActions";
-import * as authorActions from "../../actions/authorActions";
 import CourseForm from "./CourseForm";
 import toastr from "toastr";
+import {SortCoursebyTitle} from "../../reducers/courseReducer";
 
 class ManageCoursePage extends React.Component {
 

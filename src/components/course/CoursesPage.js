@@ -17,6 +17,8 @@ class CoursesPage extends React.Component {
         this.redirectToAddCoursePage = this.redirectToAddCoursePage.bind(this);
     }
 
+   
+
     redirectToAddCoursePage() {
         browserHistory.push("/course");
     }
@@ -45,9 +47,17 @@ CoursesPage.propTypes = {
 };
 
 
+function SortCoursebyTitle(a,b) {
+    if (a.title < b.title)
+      return -1;
+    if (a.title > b.title)
+      return 1;
+    return 0;
+}
+
 function mapStateToProps(state, ownProps) {
     return {
-        courses:state.courses
+        courses:[...state.courses].sort(SortCoursebyTitle)
     };
 }
 
